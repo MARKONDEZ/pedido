@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pedido de Refeição</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #e9f5ec;
+      padding: 20px;
+    }
+    
+    .form-container {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .header-cardapio {
+      background: #4CAF50;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .header-cardapio h2 {
+      color: white;
+      margin: 0;
+      font-size: 1.5em;
+    }
+    
+    .header-cardapio p {
+      margin: 5px 0 0;
+      font-size: 1.1em;
+    }
+    
+    .btn-success {
+      background-color: #4caf50;
+      border-color: #4caf50;
+    }
+    
+    .btn-success:hover {
+      background-color: #45a049;
+      border-color: #45a049;
+    }
+    
+    .form-title {
+      color: #2e7d32;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .error-message {
+      color: #d32f2f;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+    
+    .is-invalid {
+      border-color: #d32f2f;
+    }
+    
+    .form-check-label {
+      margin-left: 5px;
+    }
+    
+    .form-section {
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <form id="formulario">
+        <!-- Tela 1 - Nome -->
+        <div id="tela1">
+          <h2 class="form-title">Bem-vindo! Qual o seu nome?</h2>
+          <div class="mb-3">
+            <input type="text" class="form-control" id="nome" name="nome" required>
+          </div>
+          <button type="button" class="btn btn-success btn-lg w-100" onclick="proximaTela(2)">Próximo</button>
+        </div>
+
+        <!-- Tela 2 - Mesa -->
+        <div id="tela2" class="d-none">
+          <h4 class="form-title">Vamos lá, <span id="nomeExibido"></span>.<br> Qual o número da sua mesa?</h4>
+          <div class="mb-3">
+            <input type="text" class="form-control" id="mesa" name="mesa" required>
+          </div>
+          <div class="d-grid gap-2">
+           
+            <button type="button" class="btn btn-success btn-lg" onclick="proximaTela(3)">Próximo</button>
+          </div>
+        </div>
+
+        <!-- Tela 3 - Telefone -->
+        <div id="tela3" class="d-none">
+          <h2 class="form-title">Digite o número do seu telefone:</h2>
+          <div class="mb-3">
+            <input type="tel" class="form-control" id="tele" name="tele" placeholder="(00) 00000-0000" required>
+            <div id="teleError" class="error-message">Por favor, insira um telefone válido no formato (00) 00000-0000</div>
+          </div>
+          <div class="d-grid gap-2">
+            
+            <button type="button" class="btn btn-success btn-lg" onclick="validarTelefone()">Próximo</button>
+          </div>
+        </div>
+
+        <!-- Tela 4 - Cardápio -->
+        <div id="tela4" class="d-none">
+          <div class="header-cardapio">
+            <h2>🍽️ Escolha as opções e faça e seu prato</h2>
+            <p>🎉 Tenha um bom apetite!</p>
+          </div>
+
+          <div class="form-section">
+            <label class="form-label fw-bold">Escolha seu Feijão (Escolha 1 opção)</label>
+            <div class="form-group">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="prato" id="feijao1" value="Feijão Branco" required>
+                <label class="form-check-label" for="feijao1">Feijão Branco</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="prato" id="feijao2" value="Feijão Afarofado">
+                <label class="form-check-label" for="feijao2">Feijão Afarofado</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="prato" id="feijao3" value="Feijão Carioca">
+                <label class="form-check-label" for="feijao3">Feijão Carioca</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="prato" id="feijao4" value="Feijoada">
+                <label class="form-check-label" for="feijao4">Feijoada</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="prato" id="feijao5" value="Refeição Sem feijão">
+                <label class="form-check-label" for="feijao5">Refeição Sem feijão</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <label class="form-label fw-bold">Carboidrato (Escolha até 2 opções)</label>
+            <div class="form-group" id="carboidrato">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="carboidrato" id="carb1" value="Arroz Branco">
+                <label class="form-check-label" for="carb1">Arroz Branco</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="carboidrato" id="carb2" value="Arroz Refolgado">
+                <label class="form-check-label" for="carb2">Arroz Refolgado</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="carboidrato" id="carb3" value="Arroz de Leite">
+                <label class="form-check-label" for="carb3">Arroz de Leite</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="carboidrato" id="carb4" value="Espaguete">
+                <label class="form-check-label" for="carb4">Espaguete</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="carboidrato" id="carb5" value="Macarronada Cozida">
+                <label class="form-check-label" for="carb5">Macarronada Cozida</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <label class="form-label fw-bold">Acompanhamento (Escolha até 2 opções)</label>
+            <div class="form-group" id="acompanhamento">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="acompanhamento" id="acomp1" value="Batata Frita">
+                <label class="form-check-label" for="acomp1">Batata Frita</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="acompanhamento" id="acomp2" value="Macaxeira Frita">
+                <label class="form-check-label" for="acomp2">Macaxeira Frita</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="acompanhamento" id="acomp3" value="Macaxeira Cozida">
+                <label class="form-check-label" for="acomp3">Macaxeira Cozida</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="acompanhamento" id="acomp4" value="Purê de Batata">
+                <label class="form-check-label" for="acomp4">Purê de Batata</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="acompanhamento" id="acomp5" value="Purê de Abôbora">
+                <label class="form-check-label" for="acomp5">Purê de Abôbora</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <label class="form-label fw-bold">Proteína (Escolha até 2 opções)</label>
+            <div class="form-group" id="proteina">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="proteina" id="prot1" value="Carne de Sol">
+                <label class="form-check-label" for="prot1">Carne de Sol</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="proteina" id="prot2" value="Fígado Acebolado">
+                <label class="form-check-label" for="prot2">Fígado Acebolado</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="proteina" id="prot3" value="Bife de Panela">
+                <label class="form-check-label" for="prot3">Bife de Panela</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="proteina" id="prot4" value="Lasanha à Bolonhesa">
+                <label class="form-check-label" for="prot4">Lasanha à Bolonhesa</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="proteina" id="prot5" value="Almondega">
+                <label class="form-check-label" for="prot5">Almondega</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <label class="form-label fw-bold">Salada (Escolha até 2 opções)</label>
+            <div class="form-group" id="salada">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="salada" id="salada1" value="Salada Fria">
+                <label class="form-check-label" for="salada1">Salada Fria</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="salada" id="salada2" value="Salada à Maionese">
+                <label class="form-check-label" for="salada2">Salada à Maionese</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="salada" id="salada3" value="Salada de Alface com Tomate">
+                <label class="form-check-label" for="salada3">Salada de Alface com Tomate</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="salada" id="salada4" value="Vinagrete">
+                <label class="form-check-label" for="salada4">Vinagrete</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="salada" id="salada5" value="Salada de legumes cozidos">
+                <label class="form-check-label" for="salada5">Salada de legumes cozidos</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="refeicao" class="form-label fw-bold">Refeição</label>
+            <select class="form-select" name="refeicao" id="refeicao" required>
+              <option value="">Selecione</option>
+              <option value="Almoçar no Restaurante">Almoçar no Restaurante</option>
+              <option value="Levar para casa">Levar para casa</option>
+            </select>
+          </div>
+
+          <div class="d-grid gap-2">
+           
+            <button type="submit" class="btn btn-success btn-lg">Enviar Pedido</button>
+          </div>
+        </div>
+
+        <!-- Tela Final - Confirmação -->
+        <div id="telaFinal" class="d-none text-center">
+          <p id="mensagemFinal" class="fs-4 text-success mb-4"></p>
+          <button class="btn btn-success btn-lg w-100" onclick="reiniciarFormulario()">Fazer novo pedido</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    const formulario = document.getElementById("formulario");
+
+    // Garantir que apenas a tela1 esteja visível ao carregar a página
+    document.addEventListener("DOMContentLoaded", function() {
+      reiniciarFormulario();
+      aplicarMascaraTelefone();
+    });
+
+    // Capitalização automática do nome
+    document.getElementById("nome").addEventListener("input", function(e) {
+      // Guarda a posição atual do cursor
+      const cursorPosition = this.selectionStart;
+      
+      // Obtém o valor atual do campo
+      let currentValue = this.value;
+      
+      // Formata o nome mantendo os espaços
+      this.value = formatarNome(currentValue);
+      
+      // Restaura a posição do cursor, ajustando para possíveis mudanças
+      const newCursorPosition = cursorPosition + (this.value.length - currentValue.length);
+      this.setSelectionRange(newCursorPosition, newCursorPosition);
+    });
+
+    function formatarNome(nome) {
+      // Primeiro, capitaliza todas as palavras adequadamente
+      let formatted = nome.replace(/(\S)(\S*)/g, function(_, firstChar, rest) {
+        return firstChar.toUpperCase() + rest.toLowerCase();
+      });
+      
+      // Garante que os espaços sejam preservados corretamente
+      return formatted.replace(/\s+/g, ' '); // Substitui múltiplos espaços por um único
+    }
+
+    // Função para reiniciar o formulário
+    function reiniciarFormulario() {
+      formulario.reset();
+      document.querySelectorAll("#tela1, #tela2, #tela3, #tela4, #telaFinal").forEach(div => {
+        div.classList.add("d-none");
+      });
+      document.getElementById("tela1").classList.remove("d-none");
+    }
+
+    function proximaTela(tela) {
+      if (tela === 2) {
+        const nome = document.getElementById("nome").value.trim();
+        if (!nome) {
+          alert("Digite seu nome");
+          return;
+        }
+        document.getElementById("nomeExibido").textContent = nome;
+      }
+
+      if (tela === 3) {
+        const mesa = document.getElementById("mesa").value.trim();
+        if (!mesa) {
+          alert("Digite o número da mesa");
+          return;
+        }
+      }
+
+      document.querySelectorAll("#tela1, #tela2, #tela3, #tela4").forEach(div => div.classList.add("d-none"));
+      document.getElementById("tela" + tela).classList.remove("d-none");
+      
+      // Rolagem para o topo da tela
+      window.scrollTo(0, 0);
+    }
+
+    function limitarCheckboxes(grupoId, limite) {
+      const grupo = document.getElementById(grupoId);
+      const checkboxes = grupo.querySelectorAll("input[type=checkbox]");
+
+      checkboxes.forEach(chk => {
+        chk.addEventListener("change", () => {
+          const selecionados = Array.from(checkboxes).filter(cb => cb.checked);
+          if (selecionados.length > limite) {
+            chk.checked = false;
+            alert("Você pode escolher no máximo " + limite + " opções.");
+          }
+        });
+      });
+    }
+
+    // Aplicar máscara de telefone
+    function aplicarMascaraTelefone() {
+      const telefoneInput = document.getElementById("tele");
+      
+      telefoneInput.addEventListener("input", function(e) {
+        let value = this.value.replace(/\D/g, '');
+        
+        if (value.length > 11) {
+          value = value.substring(0, 11);
+        }
+        
+        if (value.length > 0) {
+          value = "(" + value;
+        }
+        if (value.length > 3) {
+          value = value.substring(0, 3) + ") " + value.substring(3);
+        }
+        if (value.length > 10) {
+          value = value.substring(0, 10) + "-" + value.substring(10);
+        }
+        
+        this.value = value;
+      });
+    }
+
+    // Validação do telefone
+    function validarTelefone() {
+      const telefoneInput = document.getElementById("tele");
+      const telefone = telefoneInput.value;
+      const errorElement = document.getElementById("teleError");
+      
+      // Regex para validar telefone no formato brasileiro (com DDD)
+      const regex = /^\(\d{2}\) \d{4,5}-\d{4}$/;
+      
+      if (!regex.test(telefone)) {
+        telefoneInput.classList.add("is-invalid");
+        errorElement.style.display = "block";
+        return false;
+      }
+      
+      telefoneInput.classList.remove("is-invalid");
+      errorElement.style.display = "none";
+      proximaTela(4);
+      return true;
+    }
+
+    // Limitar checkboxes
+    ["carboidrato", "acompanhamento", "proteina", "salada"].forEach(grupo => limitarCheckboxes(grupo, 2));
+
+    formulario.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // Validação final do telefone antes de enviar
+      if (!validarTelefone()) return;
+
+      // Verifica se selecionou um tipo de feijão
+      const feijaoSelecionado = document.querySelector('input[name="prato"]:checked');
+      if (!feijaoSelecionado) {
+        alert("Por favor, selecione uma opção de feijão");
+        return;
+      }
+
+      const formData = new FormData();
+      const nome = document.getElementById("nome").value;
+      formData.append("nome", nome);
+      formData.append("mesa", document.getElementById("mesa").value);
+      formData.append("tele", document.getElementById("tele").value);
+      formData.append("prato", feijaoSelecionado.value);
+
+      ["carboidrato", "acompanhamento", "proteina", "salada"].forEach(grupo => {
+        const selecionados = Array.from(formulario.querySelectorAll(`input[name=${grupo}]:checked`))
+                                  .map(cb => cb.value)
+                                  .join(", ");
+        formData.append(grupo, selecionados);
+      });
+
+      formData.append("refeicao", document.getElementById("refeicao").value);
+
+      const dataHora = new Date().toLocaleString("pt-BR");
+      formData.append("datahora", dataHora);
+
+      fetch("https://script.google.com/macros/s/AKfycbzNSEdFO-y_4g26XeMNQLszOnOerxGNmGDXxcAOUFKptIoy_1_3Wfd8ok4NJoMemEtItw/exec", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.text())
+      .then(msg => {
+        if (msg === "OK") {
+          document.getElementById("tela4").classList.add("d-none");
+          document.getElementById("telaFinal").classList.remove("d-none");
+          document.getElementById("mensagemFinal").textContent = `Pronto, ${nome}; seu pedido foi solicitado com sucesso!`;
+        } else {
+          alert("Erro ao enviar: " + msg);
+        }
+      })
+      .catch(err => alert("Erro: " + err));
+    });
+  </script>
+</body>
+</html>
